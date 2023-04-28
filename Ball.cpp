@@ -94,13 +94,9 @@ void Ball::manageCollisionWith(sf::RenderWindow& window)
 
 void Ball::manageCollisionWith(Player & player)
 {
-	// Vérifier si la balle est en collision avec le joueur
 	if (position.x + radius >= player.getPosition().x && position.x - radius <= player.getPosition().x + player.getSize().x && position.y + radius >= player.getPosition().y && position.y - radius <= player.getPosition().y + player.getSize().y)
 	{
-		// Calculer l'angle de rebond en fonction de la position de la balle sur le joueur
 		double angle = ((position.x - player.getPosition().x) / player.getSize().x) * (5 * 30 / 12) - (5 * 30 / 12) / 2;
-
-		// Modifier la direction de la balle en fonction de l'angle de rebond
 		setAngle(angle);
 	}
 }

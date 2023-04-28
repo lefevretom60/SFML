@@ -3,6 +3,7 @@
 
 
 Player::Player(int y, int width, int height)
+
 {
 	this->y = y;
 	position = sf::Vector2f(0, y);

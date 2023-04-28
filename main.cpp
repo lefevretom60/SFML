@@ -1,9 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include "Ball.h"
 #include "player.h"
+#include "Brick.h"
 
 double mapValue(double x, double a, double b, double c, double d) {
-	double y = (x - a) / (a - b)*(c - d) + c;
+	double y = (x - a) / (a - b)*(c - d) + c; 
 	return y;
 }
 int main(int argc, char **argv)
@@ -12,23 +13,6 @@ int main(int argc, char **argv)
 
 	Ball ball(200, 250, 10,500);
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Jeu de casse-brique");
-
-	
-	//debut de la formation
-	//code ne sert a rien pour le TP
-	/*sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(100, 50));
-	rectangle.setFillColor(sf::Color::Cyan);
-	rectangle.setOutlineColor(sf::Color::Magenta);
-	rectangle.setOutlineThickness(2);
-	rectangle.setPosition(100, 100);*/
-
-	/*sf::CircleShape circle; 
-	circle.setRadius(10);
-	circle.setPosition(300, 170);
-	circle.setFillColor(sf::Color::Black);
-	circle.setOutlineColor(sf::Color::White);
-	circle.setOutlineThickness(2);*/
 
 	sf::RectangleShape rdr2;
 	rdr2.setSize(sf::Vector2f(window.getSize().x, 1));

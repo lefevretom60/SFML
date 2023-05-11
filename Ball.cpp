@@ -1,4 +1,6 @@
-#include "Ball.h"
+﻿#include "Ball.h"
+#include <cmath>
+#include <cstdlib>
 
 bool Ball::isRandInitialized = false;
 
@@ -50,7 +52,7 @@ void Ball::draw(sf::RenderWindow & window)
 
 float Ball::getSpeed()
 {
-	 return speed;
+	return speed;
 }
 
 void Ball::setSpeed(float newSpeed)
@@ -71,7 +73,7 @@ void Ball::setDirection(sf::Vector2f newDirection)
 
 void Ball::manageCollisionWith(sf::RenderWindow& window)
 {
-	if (position.y <= 0 )
+	if (position.y <= 0)
 	{
 		direction.y *= -1;
 	}
@@ -80,7 +82,7 @@ void Ball::manageCollisionWith(sf::RenderWindow& window)
 	{
 		direction.y *= -1;
 	}
-	
+
 	if (position.x <= 0)
 	{
 		direction.x *= -1;
@@ -92,11 +94,102 @@ void Ball::manageCollisionWith(sf::RenderWindow& window)
 
 }
 
-void Ball::manageCollisionWith(Player & player)
+void Ball::manageCollisionWith(Player& player, sf::RenderWindow& window)
 {
-	if (position.x + radius >= player.getPosition().x && position.x - radius <= player.getPosition().x + player.getSize().x && position.y + radius >= player.getPosition().y && position.y - radius <= player.getPosition().y + player.getSize().y)
+	float MAX_ANGLE = 45;
+	const int MARGE = 2;
+
+	if (position.y + 2 * radius >= player.getPosition().y &&
+		position.y + 2 * radius <= player.getPosition().y + player.getSize().y &&
+		position.x + 2 * radius >= player.getPosition().x &&
+		position.x <= player.getPosition().x + player.getSize().x)
 	{
-		double angle = ((position.x - player.getPosition().x) / player.getSize().x) * (5 * 30 / 12) - (5 * 30 / 12) / 2;
+		double relativeIntersectX = position.x + radius - player.getPosition().x - player.getSize().x / 2.0;
+
+		double normalizedRelativeIntersectionX = relativeIntersectX / (player.getSize().x / 2.0);
+
+		double angle = normalizedRelativeIntersectionX * MAX_ANGLE;
+
 		setAngle(angle);
+
+		position.y = player.getPosition().y - 2 * radius - 0.1f;
+		direction.y = -std::abs(direction.y);
+
+		double randomAngle = (((double)rand() / (double)RAND_MAX) * 30.0) - 15.0;
+		double newAngle = angle + randomAngle;
+		if (newAngle > MAX_ANGLE) {
+			newAngle = MAX_ANGLE;
+		}
+		if (newAngle < -MAX_ANGLE) {
+			newAngle = -MAX_ANGLE;
+		}
+		setAngle(newAngle);
+	}
+	if (position.y <= 0){
+		position.y = 0;
+		direction.y = std::abs(direction.y);
+	}
+ 
+	if (position.y + 2 * radius >= window.getSize().y){
+		position.y = window.getSize().y - 2 * radius;
+		direction.y = -std::abs(direction.y);
+	}
+
+	if (position.x <= 0){
+		position.x = 0;
+		direction.x = std::abs(direction.x);
+	}
+
+	if (position.x + 2 * radius >= window.getSize().x){
+		position.x = window.getSize().x - 2 * radius;
+		direction.x = -std::abs(direction.x);
 	}
 }
+
+void Ball::manageCollisionWith(Brick& brick)
+{
+	sf::FloatRect ballBounds = shape.getGlobalBounds();
+	sf::FloatRect brickBounds = brick.getShape().getGlobalBounds();
+
+	// Augmenter légèrement la taille des rectangles de collision
+	float expandedBallLeft = ballBounds.left - 1.0f;
+	float expandedBallRight = ballBounds.left + ballBounds.width + 1.0f;
+	float expandedBallTop = ballBounds.top - 1.0f;
+	float expandedBallBottom = ballBounds.top + ballBounds.height + 1.0f;
+
+	float expandedBrickLeft = brickBounds.left - 1.0f;
+	float expandedBrickRight = brickBounds.left + brickBounds.width + 1.0f;
+	float expandedBrickTop = brickBounds.top - 1.0f;
+	float expandedBrickBottom = brickBounds.top + brickBounds.height + 1.0f;
+
+	// Vérifier les collisions sur les côtés
+	if (expandedBallRight >= expandedBrickLeft && expandedBallLeft <= expandedBrickRight &&
+		expandedBallTop <= expandedBrickBottom && expandedBallBottom >= expandedBrickTop)
+	{
+		// Collision détectée, gérer la collision avec la brique
+		brick.hit();
+
+		// Inverser la direction de la balle selon le côté de la collision
+		if (expandedBallRight >= expandedBrickLeft && expandedBallLeft <= expandedBrickLeft)
+		{
+			// Collision côté gauche
+			direction.x = -direction.x;
+		}
+		else if (expandedBallLeft <= expandedBrickRight && expandedBallRight >= expandedBrickRight)
+		{
+			// Collision côté droit
+			direction.x = -direction.x;
+		}
+		else if (expandedBallBottom >= expandedBrickTop && expandedBallTop <= expandedBrickTop)
+		{
+			// Collision côté haut
+			direction.y = -direction.y;
+		}
+		else if (expandedBallTop <= expandedBrickBottom && expandedBallBottom >= expandedBrickBottom)
+		{
+			// Collision côté bas
+			direction.y = -direction.y;
+		}
+	}
+}
+

@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "player.h"
+#include "Brick.h"
+
 class Ball
 {
 private:
@@ -16,6 +18,7 @@ private:
 public:
 	Ball(int x, int y, int radius, float speed);
 	~Ball();
+
 	void move(float ellapsedTime);
 	void draw(sf::RenderWindow& window);
 	float getSpeed();
@@ -23,5 +26,6 @@ public:
 	void setPosition(sf::Vector2f newPosition);
 	void setDirection(sf::Vector2f newDirection);
 	void manageCollisionWith(sf::RenderWindow& window);
-	void manageCollisionWith(Player& player);
-};
+	void manageCollisionWith(Player& player, sf::RenderWindow& window);
+	void manageCollisionWith(Brick& brick);
+};

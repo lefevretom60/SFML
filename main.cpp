@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 
 	Player player(510, 70, 10);
 	Ball ball(200, 250, 10, 500);
-	Brick brick(100, 100, 50, 30, 3);
+	Brick brick(100, 100, 50, 30, 1000);
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Jeu de casse-brique");
 
 	sf::RectangleShape rdr2;
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 		ball.manageCollisionWith(player, window);
 		ball.manageCollisionWith(brick);
 		window.clear();
-
+		
 		for (int i = 0; i < window.getSize().y; i++)
 		{
 			double mappedValue = mapValue(i, 0, window.getSize().y, 0, 255);
@@ -73,6 +73,12 @@ int main(int argc, char **argv)
 			rdr2.setPosition(0, i);
 			window.draw(rdr2);
 		}
+		
+		for (int i = 0; i < bricks.size(); i++)
+		{
+			ball.manageCollisionWith(*bricks[i]);
+		}
+		
 		
 		for (auto& brick : bricks)
 		{
@@ -83,19 +89,6 @@ int main(int argc, char **argv)
 		window.display();
 		window.clear(sf::Color::Black);
 		}
-	for (int i = 0; i < bricks.size(); i++)
-	{
-		ball.manageCollisionWith(*bricks[i]);
-	}
-
-	// ...
-
-	// Dessiner les briques
-	for (int i = 0; i < bricks.size(); i++)
-	{
-		bricks[i]->draw(window);
-	}
 	
-
 	return 0;
 }

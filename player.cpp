@@ -1,10 +1,8 @@
-#include "player.h"
+﻿#include "player.h"
 
 
 
-Player::Player(int y, int width, int height)
-
-{
+Player::Player(int y, int width, int height){
 	this->y = y;
 	position = sf::Vector2f(0, y);
 	size = sf::Vector2f(width, height);
@@ -14,7 +12,6 @@ Player::Player(int y, int width, int height)
 
 Player::~Player()
 {
-	
 }
 
 void Player::draw(sf::RenderWindow& window)
@@ -47,5 +44,4 @@ sf::Vector2f Player::getSize()
 {
 	return size;
 }
-
 

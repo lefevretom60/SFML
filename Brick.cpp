@@ -7,7 +7,7 @@ Brick::Brick(int x, int y, int width, int height, int health)
 	size.x = width;
 	size.y = height;
 	this->health = health;
-
+	
 	shape.setSize(size);
 	shape.setPosition(position);
 	shape.setFillColor(getColorFromLife());
@@ -25,7 +25,7 @@ void Brick::draw(sf::RenderWindow& window)
 
 sf::Color Brick::getColorFromLife()
 {
-	if (health > 1)
+	if (health > 10)
 	{
 		return sf::Color::Green;
 	}
@@ -48,8 +48,18 @@ void Brick::hit()
 {
 	health--;
 	shape.setFillColor(getColorFromLife());
-}
 
+	if (!isAlive())
+	{
+		destroy();
+	}
+}
+void Brick::destroy()
+{
+	position.x = -100;
+	position.y = -100;
+	shape.setPosition(position);
+}
 sf::Vector2f Brick::getPosition()
 {
 	return position;

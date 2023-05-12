@@ -145,7 +145,7 @@ void Ball::manageCollisionWith(Player& player, sf::RenderWindow& window)
 		direction.x = -std::abs(direction.x);
 	}
 }
-
+/*
 void Ball::manageCollisionWith(Brick& brick)
 {
 	sf::FloatRect ballBounds = shape.getGlobalBounds();
@@ -191,5 +191,51 @@ void Ball::manageCollisionWith(Brick& brick)
 			direction.y = -direction.y;
 		}
 	}
-}
+}*/
+void Ball::manageCollisionWith(Brick& brick)
+{
+	static bool hasCollided = false; // Variable pour suivre l'état de la collision précédente
+	static const sf::Time collisionDelay = sf::seconds(0.1f); // Délai d'une seconde
+	static sf::Clock collisionClock; // Horloge pour mesurer le temps écoulé depuis la dernière collision
 
+	if (hasCollided && collisionClock.getElapsedTime() < collisionDelay)
+	{
+		// Attendre le délai entre les collisions
+		return;
+	}
+
+	sf::FloatRect ballBounds = shape.getGlobalBounds();
+	sf::FloatRect brickBounds = brick.getShape().getGlobalBounds();
+
+	if (ballBounds.intersects(brickBounds))
+	{
+		if (brick.getColorFromLife() == sf::Color::Green)
+		{
+			// Brique verte, ne pas gérer la collision
+			return;
+		}
+
+		brick.hit();
+
+		float overlapX = std::min(ballBounds.left + ballBounds.width, brickBounds.left + brickBounds.width) - std::max(ballBounds.left, brickBounds.left);
+		float overlapY = std::min(ballBounds.top + ballBounds.height, brickBounds.top + brickBounds.height) - std::max(ballBounds.top, brickBounds.top);
+
+		if (overlapX > overlapY)
+		{
+			// Collision depuis le haut ou le bas
+			direction.y = -direction.y;
+		}
+		else
+		{
+			// Collision depuis la gauche ou la droite
+			direction.x = -direction.x;
+		}
+
+		hasCollided = true;
+		collisionClock.restart(); // Redémarrer l'horloge après la collision
+	}
+	else
+	{
+		hasCollided = false;
+	}
+}

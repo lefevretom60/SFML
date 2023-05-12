@@ -19,6 +19,7 @@ public:
 	sf::Color getColorFromLife();
 	bool isAlive();
 	void hit();
+	void destroy();
 	sf::Vector2f getPosition();
 	sf::Vector2f getSize();
 	sf::RectangleShape getShape();
